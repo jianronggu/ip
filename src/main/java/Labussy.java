@@ -43,6 +43,23 @@ public class Labussy {
                 continue;
             }
 
+            if (input.toLowerCase().startsWith("delete ")) {
+                String[] parts = input.split("\\s+", 2);
+                int index = Integer.parseInt(parts[1]) - 1;
+                if (index + 1 > tasks.size() || index < 0) {
+                    System.out.println("Invalid. Please refer to the correct task numbers");
+                    continue;
+                }
+                Task task = tasks.get(index);
+                tasks.remove(index);
+                divide();
+                System.out.println("Noted. I've removed this task: ");
+                System.out.println(task);
+                System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                divide();
+                continue;
+            }
+
             if (input.toLowerCase().startsWith("mark ")) {
                 String[] parts = input.split("\\s+", 2);
 
@@ -50,7 +67,8 @@ public class Labussy {
                 if (index + 1 > tasks.size() || index < 0) {
                     System.out.println("Invalid. Please refer to the correct task numbers");
                     continue;
-                }                tasks.get(index).markAsDone();
+                }
+                tasks.get(index).markAsDone();
                 divide();
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println(tasks.get(index));
