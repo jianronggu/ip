@@ -1,3 +1,4 @@
+import javax.lang.model.type.NullType;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -46,7 +47,10 @@ public class Labussy {
                 String[] parts = input.split("\\s+", 2);
 
                 int index = Integer.parseInt(parts[1]) - 1;
-                tasks.get(index).markAsDone();
+                if (index + 1 > tasks.size() || index < 0) {
+                    System.out.println("Invalid. Please refer to the correct task numbers");
+                    continue;
+                }                tasks.get(index).markAsDone();
                 divide();
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println(tasks.get(index));
@@ -56,8 +60,11 @@ public class Labussy {
 
             if (input.toLowerCase().startsWith("unmark" )) {
                 String[] parts = input.split("\\s+", 2);
-
                 int index = Integer.parseInt(parts[1]) - 1;
+                if (index + 1 > tasks.size() || index < 0) {
+                    System.out.println("Invalid. Please refer to the correct task numbers");
+                    continue;
+                }
                 tasks.get(index).markAsUndone();
                 divide();
                 System.out.println("OK, I've marked this task as not done yet: ");
@@ -66,48 +73,89 @@ public class Labussy {
                 continue;
             }
             else {
-                if (input.toLowerCase().startsWith("todo ")) {
-                    int firstSpaceIndex = input.indexOf(" ");
-                    String description = input.substring(firstSpaceIndex + 1);
+                try {
+                    if (input.toLowerCase().startsWith("todo ")) {
+                        try {
+                            int firstSpaceIndex = input.indexOf(" ");
+                            String description = input.substring(firstSpaceIndex + 1);
+                            if (description.isEmpty()) throw new BlankException();
 
-                    ToDo todo = new ToDo(description);
-                    tasks.add(todo);
-                    divide();
-                    System.out.println("Got it. I've added this task: ");
-                    System.out.println(todo);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    divide();
-                }
+                            ToDo todo = new ToDo(description);
+                            tasks.add(todo);
+                            divide();
+                            System.out.println("Got it. I've added this task: ");
+                            System.out.println(todo);
+                            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                            divide();
+                        } catch (BlankException e) {
+                            divide();
+                            System.out.println(e.getMessage());
+                            divide();
+                        }
+                        continue;
+                    }
 
-                if (input.toLowerCase().startsWith("deadline ")) {
-                    int firstSpaceIndex = input.indexOf(" ");
-                    int bySpaceIndex = input.indexOf("/by");
-                    String description = input.substring(firstSpaceIndex + 1, bySpaceIndex);
-                    String by = input.substring(bySpaceIndex + 4);
+                    if (input.toLowerCase().startsWith("deadline ")) {
+                        try {
+                            int firstSpaceIndex = input.indexOf(" ");
+                            int bySpaceIndex = input.indexOf("/by");
+                            if (bySpaceIndex == -1) throw new MissingComponentException();
+                            String description = input.substring(firstSpaceIndex + 1, bySpaceIndex);
+                            if (description.isEmpty()) throw new BlankException();
+                            String by = input.substring(bySpaceIndex + 4);
+                            Deadline deadline = new Deadline(description, by);
+                            tasks.add(deadline);
+                            divide();
+                            System.out.println("Got it. I've added this task: ");
+                            System.out.println(deadline);
+                            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                            divide();
+                        } catch (BlankException e) {
+                            divide();
+                            System.out.println(e.getMessage());
+                            divide();
+                        } catch (MissingComponentException e) {
+                            divide();
+                            System.out.println(e.getMessage());
+                            divide();
+                        }
+                        continue;
+                    }
 
-                    Deadline deadline = new Deadline(description, by);
-                    tasks.add(deadline);
-                    divide();
-                    System.out.println("Got it. I've added this task: ");
-                    System.out.println(deadline);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    divide();
-                }
+                    if (input.toLowerCase().startsWith("event ")) {
+                        try {
+                            int firstSpaceIndex = input.indexOf(" ");
+                            int fromSpaceIndex = input.indexOf("/from");
+                            if (fromSpaceIndex == -1) throw new MissingComponentException();
+                            int toSpaceIndex = input.indexOf("/to");
+                            if (toSpaceIndex == -1) throw new MissingComponentException();
+                            String description = input.substring(firstSpaceIndex + 1, fromSpaceIndex);
+                            if (description.isEmpty()) throw new BlankException();
+                            String from = input.substring(fromSpaceIndex + 6, toSpaceIndex);
+                            String to = input.substring(toSpaceIndex + 4);
 
-                if (input.toLowerCase().startsWith("event ")) {
-                    int firstSpaceIndex = input.indexOf(" ");
-                    int fromSpaceIndex = input.indexOf("/from");
-                    int toSpaceIndex = input.indexOf("/to");
-                    String description = input.substring(firstSpaceIndex + 1, fromSpaceIndex);
-                    String from = input.substring(fromSpaceIndex + 6, toSpaceIndex);
-                    String to = input.substring(toSpaceIndex + 4);
+                            Event event = new Event(description, from, to);
+                            tasks.add(event);
+                            divide();
+                            System.out.println("Got it. I've added this task: ");
+                            System.out.println(event);
+                            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                            divide();
+                        } catch (BlankException e) {
+                            divide();
+                            System.out.println(e.getMessage());
+                            divide();
+                        } catch (MissingComponentException e) {
+                            divide();
+                            System.out.println(e.getMessage());
+                            divide();
+                        }
 
-                    Event event = new Event(description, from, to);
-                    tasks.add(event);
+                    }
+                    throw new IdentifierException();
+                } catch (IdentifierException e) {
                     divide();
-                    System.out.println("Got it. I've added this task: ");
-                    System.out.println(event);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    System.out.println(e.getMessage());
                     divide();
                 }
             }
