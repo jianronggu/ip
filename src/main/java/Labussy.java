@@ -1,4 +1,3 @@
-import java.sql.SQLOutput;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -30,7 +29,6 @@ public class Labussy {
 
         while (true) {
             String input = scanner.nextLine();
-            Task task = new Task(input);
 
             if (input.equals("bye")) {
                 divide();
@@ -68,10 +66,50 @@ public class Labussy {
                 continue;
             }
             else {
-                tasks.add(task);
-                divide();
-                System.out.println("added: " + input);
-                divide();
+                if (input.toLowerCase().startsWith("todo ")) {
+                    int firstSpaceIndex = input.indexOf(" ");
+                    String description = input.substring(firstSpaceIndex + 1);
+
+                    ToDo todo = new ToDo(description);
+                    tasks.add(todo);
+                    divide();
+                    System.out.println("Got it. I've added this task: ");
+                    System.out.println(todo);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    divide();
+                }
+
+                if (input.toLowerCase().startsWith("deadline ")) {
+                    int firstSpaceIndex = input.indexOf(" ");
+                    int bySpaceIndex = input.indexOf("/by");
+                    String description = input.substring(firstSpaceIndex + 1, bySpaceIndex);
+                    String by = input.substring(bySpaceIndex + 4);
+
+                    Deadline deadline = new Deadline(description, by);
+                    tasks.add(deadline);
+                    divide();
+                    System.out.println("Got it. I've added this task: ");
+                    System.out.println(deadline);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    divide();
+                }
+
+                if (input.toLowerCase().startsWith("event ")) {
+                    int firstSpaceIndex = input.indexOf(" ");
+                    int fromSpaceIndex = input.indexOf("/from");
+                    int toSpaceIndex = input.indexOf("/to");
+                    String description = input.substring(firstSpaceIndex + 1, fromSpaceIndex);
+                    String from = input.substring(fromSpaceIndex + 6, toSpaceIndex);
+                    String to = input.substring(toSpaceIndex + 4);
+
+                    Event event = new Event(description, from, to);
+                    tasks.add(event);
+                    divide();
+                    System.out.println("Got it. I've added this task: ");
+                    System.out.println(event);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    divide();
+                }
             }
         }
     }
