@@ -63,7 +63,7 @@ public class Labussy {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("mark  ")) {
+            if (input.toLowerCase().startsWith("mark ")) {
                 String[] parts = input.split("\\s+", 2);
 
                 int index = Integer.parseInt(parts[1]) - 1;
@@ -80,7 +80,7 @@ public class Labussy {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("unmark  " )) {
+            if (input.toLowerCase().startsWith("unmark " )) {
                 String[] parts = input.split("\\s+", 2);
                 int index = Integer.parseInt(parts[1]) - 1;
                 if (index + 1 > tasks.size() || index < 0) {
