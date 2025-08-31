@@ -21,7 +21,8 @@ public class Labussy {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage();
+        ArrayList<Task> tasks = storage.load();
 
         divide();
         System.out.println("Hello! I'm Labussy.");
@@ -50,8 +51,10 @@ public class Labussy {
                     System.out.println("Invalid. Please refer to the correct task numbers");
                     continue;
                 }
+
                 Task task = tasks.get(index);
                 tasks.remove(index);
+                storage.save(tasks);
                 divide();
                 System.out.println("Noted. I've removed this task: ");
                 System.out.println(task);
@@ -60,7 +63,7 @@ public class Labussy {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("mark ")) {
+            if (input.toLowerCase().startsWith("mark  ")) {
                 String[] parts = input.split("\\s+", 2);
 
                 int index = Integer.parseInt(parts[1]) - 1;
@@ -69,6 +72,7 @@ public class Labussy {
                     continue;
                 }
                 tasks.get(index).markAsDone();
+                storage.save(tasks);
                 divide();
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println(tasks.get(index));
@@ -76,7 +80,7 @@ public class Labussy {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("unmark" )) {
+            if (input.toLowerCase().startsWith("unmark  " )) {
                 String[] parts = input.split("\\s+", 2);
                 int index = Integer.parseInt(parts[1]) - 1;
                 if (index + 1 > tasks.size() || index < 0) {
@@ -84,6 +88,7 @@ public class Labussy {
                     continue;
                 }
                 tasks.get(index).markAsUndone();
+                storage.save(tasks);
                 divide();
                 System.out.println("OK, I've marked this task as not done yet: ");
                 System.out.println(tasks.get(index));
@@ -100,6 +105,7 @@ public class Labussy {
 
                             ToDo todo = new ToDo(description);
                             tasks.add(todo);
+                            storage.save(tasks);
                             divide();
                             System.out.println("Got it. I've added this task: ");
                             System.out.println(todo);
@@ -123,6 +129,7 @@ public class Labussy {
                             String by = input.substring(bySpaceIndex + 4);
                             Deadline deadline = new Deadline(description, by);
                             tasks.add(deadline);
+                            storage.save(tasks);
                             divide();
                             System.out.println("Got it. I've added this task: ");
                             System.out.println(deadline);
@@ -154,6 +161,7 @@ public class Labussy {
 
                             Event event = new Event(description, from, to);
                             tasks.add(event);
+                            storage.save(tasks);
                             divide();
                             System.out.println("Got it. I've added this task: ");
                             System.out.println(event);
