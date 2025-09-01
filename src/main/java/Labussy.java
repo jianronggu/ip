@@ -63,7 +63,7 @@ public class Labussy {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("mark  ")) {
+            if (input.toLowerCase().startsWith("mark ")) {
                 String[] parts = input.split("\\s+", 2);
 
                 int index = Integer.parseInt(parts[1]) - 1;
@@ -80,7 +80,7 @@ public class Labussy {
                 continue;
             }
 
-            if (input.toLowerCase().startsWith("unmark  " )) {
+            if (input.toLowerCase().startsWith("unmark " )) {
                 String[] parts = input.split("\\s+", 2);
                 int index = Integer.parseInt(parts[1]) - 1;
                 if (index + 1 > tasks.size() || index < 0) {
@@ -126,7 +126,7 @@ public class Labussy {
                             if (bySpaceIndex == -1) throw new MissingComponentException();
                             String description = input.substring(firstSpaceIndex + 1, bySpaceIndex);
                             if (description.isEmpty()) throw new BlankException();
-                            String by = input.substring(bySpaceIndex + 4);
+                            Dates by = new Dates(input.substring(bySpaceIndex + 4));
                             Deadline deadline = new Deadline(description, by);
                             tasks.add(deadline);
                             storage.save(tasks);
@@ -156,8 +156,8 @@ public class Labussy {
                             if (toSpaceIndex == -1) throw new MissingComponentException();
                             String description = input.substring(firstSpaceIndex + 1, fromSpaceIndex);
                             if (description.isEmpty()) throw new BlankException();
-                            String from = input.substring(fromSpaceIndex + 6, toSpaceIndex);
-                            String to = input.substring(toSpaceIndex + 4);
+                            Dates from = new Dates(input.substring(fromSpaceIndex + 6, toSpaceIndex));
+                            Dates to = new Dates(input.substring(toSpaceIndex + 4));
 
                             Event event = new Event(description, from, to);
                             tasks.add(event);
