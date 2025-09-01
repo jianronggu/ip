@@ -1,3 +1,7 @@
+package labussy.task;
+
+import labussy.time.Dates;
+
 public class Deadline extends Task {
 
     protected Dates by;

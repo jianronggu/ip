@@ -18,7 +18,7 @@ REM --- Compile ---
 IF %ERRORLEVEL% NEQ 0 GOTO :buildfail
 
 REM --- Run (use fully-qualified name if you added a package) ---
-"%JAVA%" -classpath ..\bin Labussy < input.txt > ACTUAL.TXT
+"%JAVA%" -classpath ..\bin labussy.Labussy < input.txt > ACTUAL.TXT
 IF %ERRORLEVEL% NEQ 0 GOTO :runfail
 
 REM --- Compare (fail on mismatch) ---
