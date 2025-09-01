@@ -3,20 +3,6 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Labussy {
-    private static void divide() {
-        String Line = "____________________________________________________________";
-        System.out.println(Line);
-    }
-
-    private static void printList(ArrayList<Task> tasks) {
-        divide();
-        System.out.println("Here are the tasks in your list: ");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(" " + (i + 1) + "." + tasks.get(i));
-        }
-        divide();
-    }
-
     public static void main(String[] args) {
 
         Ui ui = new Ui();
