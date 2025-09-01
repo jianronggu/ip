@@ -26,163 +26,105 @@ public class Labussy {
 
         ui.showWelcome();
 
-        while (true) {
+        while(true) {
             String input = ui.readCommand();
-            if (input.equals("bye")) {
-                divide();
-                System.out.println("Bye. Hope to see you again soon!");
-                divide();
-                break;
-            }
+            switch (Parser.kind(input)) {
+                case BYE:
+                    ui.showBye();
+                    System.exit(0);
 
-            if (input.equals("list")) {
-                for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println(" " + (i + 1) + "." + tasks.get(i));
-                }
-                continue;
-            }
+                case LIST:
+                    ui.showList(tasks);
+                    break;
 
-            if (input.toLowerCase().startsWith("delete ")) {
-                String[] parts = input.split("\\s+", 2);
-                int index = Integer.parseInt(parts[1]) - 1;
-                if (index + 1 > tasks.size() || index < 0) {
-                    System.out.println("Invalid. Please refer to the correct task numbers");
-                    continue;
-                }
-
-                Task removed = tasks.delete(index);
-                storage.save(tasks.all());
-                divide();
-                System.out.println("Noted. I've removed this task: ");
-                System.out.println(removed);
-                System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                divide();
-                continue;
-            }
-
-            if (input.toLowerCase().startsWith("mark ")) {
-                String[] parts = input.split("\\s+", 2);
-
-                int index = Integer.parseInt(parts[1]) - 1;
-                if (index + 1 > tasks.size() || index < 0) {
-                    System.out.println("Invalid. Please refer to the correct task numbers");
-                    continue;
-                }
-                tasks.get(index).markAsDone();
-                storage.save(tasks.all());
-                divide();
-                System.out.println("Nice! I've marked this task as done:");
-                System.out.println(tasks.get(index));
-                divide();
-                continue;
-            }
-
-            if (input.toLowerCase().startsWith("unmark " )) {
-                String[] parts = input.split("\\s+", 2);
-                int index = Integer.parseInt(parts[1]) - 1;
-                if (index + 1 > tasks.size() || index < 0) {
-                    System.out.println("Invalid. Please refer to the correct task numbers");
-                    continue;
-                }
-                tasks.get(index).markAsUndone();
-                storage.save(tasks.all());
-                divide();
-                System.out.println("OK, I've marked this task as not done yet: ");
-                System.out.println(tasks.get(index));
-                divide();
-                continue;
-            }
-            else {
-                try {
-                    if (input.toLowerCase().startsWith("todo ")) {
-                        try {
-                            int firstSpaceIndex = input.indexOf(" ");
-                            String description = input.substring(firstSpaceIndex + 1);
-                            if (description.isEmpty()) throw new BlankException();
-
-                            ToDo todo = new ToDo(description);
-                            tasks.add(todo);
-                            storage.save(tasks.all());
-                            divide();
-                            System.out.println("Got it. I've added this task: ");
-                            System.out.println(todo);
-                            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                            divide();
-                        } catch (BlankException e) {
-                            divide();
-                            System.out.println(e.getMessage());
-                            divide();
-                        }
-                        continue;
+                case TODO: {
+                    try {
+                        String description = Parser.todoDesc(input);
+                        ToDo t = new ToDo(description);
+                        tasks.add(t);
+                        storage.save(tasks.all());
+                        ui.showAdded(t, tasks.size());
+                        break;
+                    } catch (BlankException e) {
+                        System.out.println(e.getMessage());
                     }
-
-                    if (input.toLowerCase().startsWith("deadline ")) {
-                        try {
-                            int firstSpaceIndex = input.indexOf(" ");
-                            int bySpaceIndex = input.indexOf("/by");
-                            if (bySpaceIndex == -1) throw new MissingComponentException();
-                            String description = input.substring(firstSpaceIndex + 1, bySpaceIndex);
-                            if (description.isEmpty()) throw new BlankException();
-                            Dates by = new Dates(input.substring(bySpaceIndex + 4));
-                            Deadline deadline = new Deadline(description, by);
-                            tasks.add(deadline);
-                            storage.save(tasks.all());
-                            divide();
-                            System.out.println("Got it. I've added this task: ");
-                            System.out.println(deadline);
-                            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                            divide();
-                        } catch (BlankException e) {
-                            divide();
-                            System.out.println(e.getMessage());
-                            divide();
-                        } catch (MissingComponentException e) {
-                            divide();
-                            System.out.println(e.getMessage());
-                            divide();
-                        }
-                        continue;
-                    }
-
-                    if (input.toLowerCase().startsWith("event ")) {
-                        try {
-                            int firstSpaceIndex = input.indexOf(" ");
-                            int fromSpaceIndex = input.indexOf("/from");
-                            if (fromSpaceIndex == -1) throw new MissingComponentException();
-                            int toSpaceIndex = input.indexOf("/to");
-                            if (toSpaceIndex == -1) throw new MissingComponentException();
-                            String description = input.substring(firstSpaceIndex + 1, fromSpaceIndex);
-                            if (description.isEmpty()) throw new BlankException();
-                            Dates from = new Dates(input.substring(fromSpaceIndex + 6, toSpaceIndex));
-                            Dates to = new Dates(input.substring(toSpaceIndex + 4));
-
-                            Event event = new Event(description, from, to);
-                            tasks.add(event);
-                            storage.save(tasks.all());
-                            divide();
-                            System.out.println("Got it. I've added this task: ");
-                            System.out.println(event);
-                            System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                            divide();
-                        } catch (BlankException e) {
-                            divide();
-                            System.out.println(e.getMessage());
-                            divide();
-                        } catch (MissingComponentException e) {
-                            divide();
-                            System.out.println(e.getMessage());
-                            divide();
-                        }
-
-                    }
-                    throw new IdentifierException();
-                } catch (IdentifierException e) {
-                    divide();
-                    System.out.println(e.getMessage());
-                    divide();
                 }
+
+                case DEADLINE: {
+                    try {
+                        String[] p = Parser.deadlineParts(input);
+                        Deadline d = new Deadline(p[0], new Dates(p[1]));
+                        tasks.add(d);
+                        storage.save(tasks.all());
+                        ui.showAdded(d, tasks.size());
+                        break;
+                    } catch (MissingComponentException e) {
+                        System.out.println(e.getMessage());
+                    } catch (BlankException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+
+                case EVENT: {
+                    try {
+                        String[] p = Parser.eventParts(input);     // [desc, from, to]
+                        Event e = new Event(p[0], new Dates(p[1]), new Dates(p[2]));
+                        tasks.add(e);
+                        storage.save(tasks.all());
+                        ui.showAdded(e, tasks.size());
+                        break;
+                    } catch (MissingComponentException e) {
+                        System.out.println(e.getMessage());
+                    } catch (BlankException e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+
+
+                case MARK: {
+                    int idx = Parser.index1(input, "mark ") - 1;   // 0-based
+                    if (idx < 0 || idx >= tasks.size()) {
+                        ui.showError("Invalid task number");
+                        break;
+                    }
+                    tasks.get(idx).markAsDone();
+                    storage.save(tasks.all());
+                    ui.showMarked(tasks.get(idx));
+                    break;
+                }
+
+                case UNMARK: {
+                    int idx = Parser.index1(input, "unmark ") - 1;
+                    if (idx < 0 || idx >= tasks.size()) {
+                        ui.showError("Invalid task number");
+                        break;
+                    }
+                    tasks.get(idx).markAsUndone();
+                    storage.save(tasks.all());
+                    ui.showUnmarked(tasks.get(idx));
+                    break;
+                }
+
+                case DELETE: {
+                    int idx = Parser.index1(input, "delete ") - 1;
+                    if (idx < 0 || idx >= tasks.size()) {
+                        ui.showError("Invalid task number");
+                        break;
+                    }
+                    Task removed = tasks.delete(idx);
+                    storage.save(tasks.all());
+                    ui.showRemoved(removed, tasks.size());
+                    break;
+                }
+
+                default:
+                    ui.showLine();
+                    ui.showError("I'm sorry, but I don't know what that means.");
+                    ui.showLine();
             }
         }
+
+
     }
 }
 
