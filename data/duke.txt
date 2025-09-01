@@ -1,3 +1,0 @@
-[T][ ] 1
-[D][ ] 1 (by: Oct 15 2019 6:00 pm)
-[E][ ] hi  (from: Dec 4 2019 6:00 pm to:Dec 4 2020 6:00 pm)

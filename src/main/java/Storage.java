@@ -61,7 +61,6 @@ public ArrayList<Task> load() {
     return tasks;
 }
 
-
     public void save(ArrayList<Task> tasks) {
         ensurePath();
         try (FileWriter fw = new FileWriter(file, false)) {
