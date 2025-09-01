@@ -3,7 +3,6 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Labussy {
-
     private static void divide() {
         String Line = "____________________________________________________________";
         System.out.println(Line);
@@ -20,18 +19,15 @@ public class Labussy {
 
     public static void main(String[] args) {
 
+        Ui ui = new Ui();
         Scanner scanner = new Scanner(System.in);
         Storage storage = new Storage();
         ArrayList<Task> tasks = storage.load();
 
-        divide();
-        System.out.println("Hello! I'm Labussy.");
-        System.out.println("What can I do for you?");
-        divide();
+        ui.showWelcome();
 
         while (true) {
-            String input = scanner.nextLine();
-
+            String input = ui.readCommand();
             if (input.equals("bye")) {
                 divide();
                 System.out.println("Bye. Hope to see you again soon!");
