@@ -27,7 +27,7 @@ IF ERRORLEVEL 1 (
 )
 
 REM --- Run program (use FQN if your main class is in a package) ---
-"%JAVA%" -classpath ..\bin Labussy < input.txt > ACTUAL.TXT
+"%JAVA%" -classpath ..\src\main\java FQN < input.txt > ACTUAL.TXT
 IF ERRORLEVEL 1 (
   ECHO ********** RUN FAILURE **********
   EXIT /B 1

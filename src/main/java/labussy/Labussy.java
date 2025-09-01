@@ -1,22 +1,20 @@
-import javax.lang.model.type.NullType;
+package labussy;
+
+import labussy.core.Parser;
+import labussy.core.Storage;
+import labussy.core.TaskList;
+import labussy.core.Ui;
+import labussy.exception.BlankException;
+import labussy.exception.MissingComponentException;
+import labussy.task.Deadline;
+import labussy.task.Event;
+import labussy.task.Task;
+import labussy.task.ToDo;
+import labussy.time.Dates;
+
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class Labussy {
-    private static void divide() {
-        String Line = "____________________________________________________________";
-        System.out.println(Line);
-    }
-
-    private static void printList(ArrayList<Task> tasks) {
-        divide();
-        System.out.println("Here are the tasks in your list: ");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(" " + (i + 1) + "." + tasks.get(i));
-        }
-        divide();
-    }
-
     public static void main(String[] args) {
 
         Ui ui = new Ui();
