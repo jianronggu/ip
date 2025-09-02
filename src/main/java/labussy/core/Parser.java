@@ -26,13 +26,25 @@ public final class Parser {
         return Integer.parseInt(in.substring(prefix.length()).trim());
     }
 
-    //Extract todo description (throws if empty).
+    /**
+     * Returns String description for todo
+     * If the position is unset, BlankException is returned.
+     *
+     * @param in input of "todo description".
+     * @return Lateral location.
+     * @throws BlankException if description is empty.
+     */
     public static String todoDesc(String in) throws BlankException {
         String description = in.substring("todo ".length()).trim();
         if (description.isEmpty()) throw new BlankException();
         return description;
     }
-    /** deadline <desc> /by <when>  -> [desc, when] */
+    /** deadline <desc> /by <when>  -> [desc, when]
+     *  @param in input of "deadline description /by 2025-09-01"
+     *  @return [description, when]
+     *  @throws BlankException if description is empty.
+     *  @throws MissingComponentException if /by is missing.
+     *  */
     public static String[] deadlineParts(String in) throws MissingComponentException, BlankException {
         int byIdx = in.indexOf("/by");
         if (byIdx < 0) throw new MissingComponentException();
@@ -42,7 +54,12 @@ public final class Parser {
         return new String[]{desc, when};
     }
 
-    /** event <desc> /from <from> /to <to>  -> [desc, from, to] */
+    /** event <desc> /from <from> /to <to>  -> [desc, from, to]
+     *  @param in input of "event sportsday /from 2025-09-01 /to 2025-09-02"
+     *  @return [description, from, to]
+     *  @throws BlankException if description is empty.
+     *  @throws MissingComponentException if /by is missing.
+     *  */
     public static String[] eventParts(String in) throws MissingComponentException, BlankException {
         int f = in.indexOf("/from");
         int t = in.indexOf("/to");

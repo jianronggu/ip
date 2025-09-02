@@ -68,7 +68,7 @@ public ArrayList<Task> load() {
     } catch (FileNotFoundException ignored) { }
     return tasks;
 }
-
+// Save tasks to the storage.
     public void save(ArrayList<Task> tasks) {
         ensurePath();
         try (FileWriter fw = new FileWriter(file, false)) {
