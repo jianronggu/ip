@@ -6,24 +6,28 @@ public class Ui {
     private static final String LINE = "____________________________________________________________";
     private final java.util.Scanner in = new java.util.Scanner(System.in);
 
+    // Print a line for aesthetic reasons.
     public void showLine() {
         System.out.println(LINE);
     }
+    // Print Welcome Page.
     public void showWelcome() {
         showLine();
         System.out.println("Hello! I'm labussy.Labussy.");
         System.out.println("What can I do for you?");
         showLine();
     }
+    // Capture the input from the user.
     public String readCommand() {
         return in.nextLine().trim();
     }
+    // Print Bye and terminate the program.
     public void showBye() {
         showLine();
         System.out.println("Bye. Hope to see you again soon!");
         showLine();
     }
-
+    // Print a list in a list format, with each task displayed.
     public void showList(TaskList tasks) {
         showLine();
         for (int i = 0; i < tasks.size(); i++) {
