@@ -12,13 +12,13 @@ import labussy.task.Task;
 import labussy.task.ToDo;
 import labussy.time.Dates;
 
+import java.lang.reflect.Array;
 import java.util.Scanner;
 
 public class Labussy {
     public static void main(String[] args) {
 
         Ui ui = new Ui();
-        Scanner scanner = new Scanner(System.in);
         Storage storage = new Storage();
         TaskList tasks = new TaskList(storage.load());
 
@@ -115,10 +115,19 @@ public class Labussy {
                     break;
                 }
 
+                case FIND: {
+                    try {
+                        String q = Parser.findKeyword(input);
+                        ui.showFindResults(tasks.find(q));
+
+                    } catch (BlankException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                }
+
                 default:
-                    ui.showLine();
                     ui.showError("I'm sorry, but I don't know what that means.");
-                    ui.showLine();
             }
         }
 

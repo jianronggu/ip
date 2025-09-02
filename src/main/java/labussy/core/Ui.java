@@ -2,6 +2,8 @@ package labussy.core;
 
 import labussy.task.Task;
 
+import java.util.ArrayList;
+
 public class Ui {
     private static final String LINE = "____________________________________________________________";
     private final java.util.Scanner in = new java.util.Scanner(System.in);
@@ -68,4 +70,13 @@ public class Ui {
         showLine();
     }
 
+    // Print find a task.
+    public void showFindResults(ArrayList<Task> tasks) {
+        showLine();
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + tasks.get(i));
+        }
+        showLine();
+    }
 }

@@ -6,7 +6,7 @@ import labussy.exception.MissingComponentException;
 public final class Parser {
     private Parser() {}
     // Kind ENUM stores all the instruction words.
-    public enum Kind { BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, UNKNOWN }
+    public enum Kind { BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, FIND, UNKNOWN }
 
     public static Kind kind(String in) {
         String s = in.trim();
@@ -18,6 +18,7 @@ public final class Parser {
         if (s.startsWith("mark "))      return Kind.MARK;
         if (s.startsWith("unmark "))    return Kind.UNMARK;
         if (s.startsWith("delete "))    return Kind.DELETE;
+        if (s.startsWith("find "))      return Kind.FIND;
         return Kind.UNKNOWN;
     }
 
@@ -52,5 +53,12 @@ public final class Parser {
         String from = in.substring(f + 5, t).trim();
         String to   = in.substring(t + 3).trim();
         return new String[]{desc, from, to};
+    }
+
+    // Pull out the key word.
+    public static String findKeyword(String in) throws BlankException {
+        String q = in.substring("find ".length()).trim();
+        if (q.isEmpty()) throw new BlankException();
+        return q;
     }
 }
