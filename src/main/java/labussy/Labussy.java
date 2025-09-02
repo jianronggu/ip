@@ -12,13 +12,13 @@ import labussy.task.Task;
 import labussy.task.ToDo;
 import labussy.time.Dates;
 
+import java.lang.reflect.Array;
 import java.util.Scanner;
 
 public class Labussy {
     public static void main(String[] args) {
 
         Ui ui = new Ui();
-        Scanner scanner = new Scanner(System.in);
         Storage storage = new Storage();
         TaskList tasks = new TaskList(storage.load());
 
@@ -27,15 +27,15 @@ public class Labussy {
         while(true) {
             String input = ui.readCommand();
             switch (Parser.kind(input)) {
-            case BYE:
+                case BYE:
                     ui.showBye();
                     System.exit(0);
 
-            case LIST:
+                case LIST:
                     ui.showList(tasks);
                     break;
 
-            case TODO: {
+                case TODO: {
                     try {
                         String description = Parser.todoDesc(input);
                         ToDo t = new ToDo(description);
@@ -48,7 +48,7 @@ public class Labussy {
                     }
                 }
 
-            case DEADLINE: {
+                case DEADLINE: {
                     try {
                         String[] p = Parser.deadlineParts(input);
                         Deadline d = new Deadline(p[0], new Dates(p[1]));
@@ -63,7 +63,7 @@ public class Labussy {
                     }
                 }
 
-            case EVENT: {
+                case EVENT: {
                     try {
                         String[] p = Parser.eventParts(input);     // [desc, from, to]
                         Event e = new Event(p[0], new Dates(p[1]), new Dates(p[2]));
@@ -79,7 +79,7 @@ public class Labussy {
                 }
 
 
-            case MARK: {
+                case MARK: {
                     int idx = Parser.index1(input, "mark ") - 1;   // 0-based
                     if (idx < 0 || idx >= tasks.size()) {
                         ui.showError("Invalid task number");
@@ -91,7 +91,7 @@ public class Labussy {
                     break;
                 }
 
-            case UNMARK: {
+                case UNMARK: {
                     int idx = Parser.index1(input, "unmark ") - 1;
                     if (idx < 0 || idx >= tasks.size()) {
                         ui.showError("Invalid task number");
@@ -103,7 +103,7 @@ public class Labussy {
                     break;
                 }
 
-            case DELETE: {
+                case DELETE: {
                     int idx = Parser.index1(input, "delete ") - 1;
                     if (idx < 0 || idx >= tasks.size()) {
                         ui.showError("Invalid task number");
@@ -115,10 +115,19 @@ public class Labussy {
                     break;
                 }
 
-             default:
-                    ui.showLine();
+                case FIND: {
+                    try {
+                        String q = Parser.findKeyword(input);
+                        ui.showFindResults(tasks.find(q));
+
+                    } catch (BlankException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                }
+
+                default:
                     ui.showError("I'm sorry, but I don't know what that means.");
-                    ui.showLine();
             }
         }
 
