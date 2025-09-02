@@ -8,13 +8,15 @@ public class Task {
         this.description = description;
         this.isDone = false;
     }
-
+    // Mark task with X.
     public String getStatusIcon() {
-        return (isDone ? "X" : " "); // mark done task with X
+        return (isDone ? "X" : " ");
     }
+    // Set task as done.
     public void markAsDone() {
         isDone = true;
     }
+    // Set task as undone.
     public void markAsUndone() {
         isDone = false;
     }
