@@ -12,13 +12,13 @@ public class Task {
     public String getStatusIcon() {
         return (isDone ? "X" : " ");
     }
+
+    //Return description
+    public String getDescription() { return description; }
     // Set task as done.
     public void markAsDone() {
         isDone = true;
     }
-
-    //Return description
-    public String getDescription() { return description; }
 
     // Set task as undone.
     public void markAsUndone() {
