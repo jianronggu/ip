@@ -11,6 +11,9 @@ import labussy.task.Task;
 import labussy.task.ToDo;
 import labussy.time.Dates;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /** GUI-facing facade that reuses the Labussy core (Parser/TaskList/Storage) but returns text replies. */
 public class Duke {
     private final Storage storage = new Storage();
@@ -20,6 +23,43 @@ public class Duke {
     /** Exposed in case the GUI wants to know if it should close. */
     public boolean shouldExit() {
         return exit;
+    }
+    /** Varargs for one or more todos */
+    private String addTodos(String... descriptions) {
+        ArrayList<String> items = new ArrayList<>();
+        for (String d : descriptions) {
+            if (d != null) {
+                String t = d.trim();
+                if (!t.isEmpty()) items.add(t);
+            }
+        }
+        if (items.isEmpty()) {
+            return "The description of a todo cannot be empty.";
+        }
+
+        int initSize = tasks.size() - 1;
+        int counter = 0;
+
+        for (String desc : items) {
+            ToDo t = new ToDo(desc);
+            tasks.add(t);
+            counter++;
+        }
+
+        storage.save(tasks.all());
+
+        // build message (single-item keeps old wording; multi-item shows a list)
+        if (counter == 1) {
+            return "Got it. I've added this task:\n  " + tasks.get(initSize + counter)
+                    + "\nNow you have " + tasks.size() + " tasks in the list.";
+        } else {
+            StringBuilder sb = new StringBuilder("Got it. I've added these tasks:\n");
+            for (int i = 0; i < counter; i++) {
+                sb.append("  ").append(i + 1).append(". ").append(tasks.get(initSize + i + 1)).append("\n");
+            }
+            sb.append("Now you have ").append(tasks.size()).append(" tasks in the list.");
+            return sb.toString();
+        }
     }
 
     /** Process one user input and return the reply text (no printing here). */
@@ -40,17 +80,19 @@ public class Duke {
                 return sb.toString().trim();
             }
 
-            case TODO:
-                try {
-                    String description = Parser.todoDesc(s);
-                    ToDo t = new ToDo(description);
-                    tasks.add(t);
-                    storage.save(tasks.all());
-                    return "Got it. I've added this task:\n  " + t
-                            + "\nNow you have " + tasks.size() + " tasks in the list.";
-                } catch (BlankException e) {
-                    return e.getMessage();
+            case TODO: {
+                // Support both: "todo read book"  OR  "todo homework, movies, dates"
+                String payload = s.substring(5).trim(); // after "todo "
+                if (payload.isEmpty()) {
+                    return "☹ OOPS!!! The description of a todo cannot be empty.";
                 }
+                // Split on commas if present; otherwise treat as a single description
+                String[] parts = payload.contains(",")
+                        ? payload.split("\\s*,\\s*")   // split by commas, trimming spaces
+                        : new String[]{ payload };
+
+                return addTodos(parts); // <-- Java varargs in action
+            }
 
             case DEADLINE:
                 try {
