@@ -1,5 +1,6 @@
-package labussy.core;
+package labussy.core.ui;
 
+import labussy.core.TaskList;
 import labussy.task.Task;
 
 import java.util.ArrayList;
