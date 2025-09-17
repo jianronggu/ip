@@ -4,6 +4,7 @@ plugins {
     id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
+// ShadowJar is more than 5MB
 
 repositories {
     mavenCentral()
@@ -19,7 +20,8 @@ dependencies {
 
     implementation "org.openjfx:javafx-base:${javaFxVersion}:mac"
     implementation "org.openjfx:javafx-controls:${javaFxVersion}:mac"
-    implementation "org.openjfx:javafx-fxml:${javaFxVersion}:mac"
+    implementation "org.openjfx:javafx-fxml:${javaFxVersion}:ma" +
+            "c"
     implementation "org.openjfx:javafx-graphics:${javaFxVersion}:mac"
 
     implementation "org.openjfx:javafx-base:${javaFxVersion}:linux"
