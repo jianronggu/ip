@@ -11,7 +11,6 @@ import labussy.task.Task;
 import labussy.task.ToDo;
 import labussy.time.Dates;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /** GUI-facing facade that reuses the Labussy core (Parser/TaskList/Storage) but returns text replies. */
@@ -24,6 +23,7 @@ public class Duke {
     public boolean shouldExit() {
         return exit;
     }
+
     /** Varargs for one or more todos */
     private String addTodos(String... descriptions) {
         ArrayList<String> items = new ArrayList<>();
@@ -37,7 +37,7 @@ public class Duke {
             return "The description of a todo cannot be empty.";
         }
 
-        int initSize = tasks.size() - 1;
+        int startIdx = tasks.size();
         int counter = 0;
 
         for (String desc : items) {
@@ -50,12 +50,12 @@ public class Duke {
 
         // build message (single-item keeps old wording; multi-item shows a list)
         if (counter == 1) {
-            return "Got it. I've added this task:\n  " + tasks.get(initSize + counter)
+            return "Got it. I've added this task:\n  " + tasks.get(startIdx)
                     + "\nNow you have " + tasks.size() + " tasks in the list.";
         } else {
             StringBuilder sb = new StringBuilder("Got it. I've added these tasks:\n");
             for (int i = 0; i < counter; i++) {
-                sb.append("  ").append(i + 1).append(". ").append(tasks.get(initSize + i + 1)).append("\n");
+                sb.append("  ").append(i + 1).append(". ").append(tasks.get(startIdx + i)).append("\n");
             }
             sb.append("Now you have ").append(tasks.size()).append(" tasks in the list.");
             return sb.toString();
@@ -73,28 +73,47 @@ public class Duke {
 
             case LIST: {
                 if (tasks.size() == 0) return "Your list is empty.";
+
                 StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
                 for (int i = 0; i < tasks.size(); i++) {
                     sb.append(" ").append(i + 1).append(".").append(tasks.get(i)).append("\n");
                 }
+
+                // Due soon section
+                boolean anyDueSoon = false;
+                StringBuilder soon = new StringBuilder();
+                for (int i = 0; i < tasks.size(); i++) {
+                    Task t = tasks.get(i);
+                    if (t instanceof Deadline && ((Deadline) t).dueSoon()) {
+                        anyDueSoon = true;
+                        soon.append("  ").append(t).append("\n");
+                    }
+                }
+                if (anyDueSoon) {
+                    sb.append("\nThese tasks are due soon (less than 1 day):\n");
+                    sb.append(soon);
+                } else {
+                    sb.append("\nThese tasks are due soon (less than 1 day):\n  (none)\n");
+                }
+
                 return sb.toString().trim();
             }
 
             case TODO: {
                 // Support both: "todo read book"  OR  "todo homework, movies, dates"
-                String payload = s.substring(5).trim(); // after "todo "
+                String payload = s.length() >= 5 ? s.substring(5).trim() : "";
                 if (payload.isEmpty()) {
                     return "☹ OOPS!!! The description of a todo cannot be empty.";
                 }
                 // Split on commas if present; otherwise treat as a single description
                 String[] parts = payload.contains(",")
-                        ? payload.split("\\s*,\\s*")   // split by commas, trimming spaces
+                        ? payload.split("\\s*,\\s*")
                         : new String[]{ payload };
 
-                return addTodos(parts); // <-- Java varargs in action
+                return addTodos(parts);
             }
 
-            case DEADLINE:
+            case DEADLINE: {
                 try {
                     String[] p = Parser.deadlineParts(s); // [desc, by]
                     Deadline d = new Deadline(p[0], new Dates(p[1]));
@@ -105,8 +124,9 @@ public class Duke {
                 } catch (MissingComponentException | BlankException e) {
                     return e.getMessage();
                 }
+            } // <-- close the DEADLINE case block properly
 
-            case EVENT:
+            case EVENT: {
                 try {
                     String[] p = Parser.eventParts(s); // [desc, from, to]
                     Event ev = new Event(p[0], new Dates(p[1]), new Dates(p[2]));
@@ -117,6 +137,7 @@ public class Duke {
                 } catch (MissingComponentException | BlankException e) {
                     return e.getMessage();
                 }
+            }
 
             case MARK: {
                 int idx = Parser.index1(s, "mark ") - 1;
@@ -143,7 +164,7 @@ public class Duke {
                         + "\nNow you have " + tasks.size() + " tasks in the list.";
             }
 
-            case FIND:
+            case FIND: {
                 try {
                     String q = Parser.findKeyword(s);
                     java.util.List<Task> matches = tasks.find(q);
@@ -156,6 +177,7 @@ public class Duke {
                 } catch (BlankException e) {
                     return e.getMessage();
                 }
+            }
 
             default:
                 return "I'm sorry, but I don't know what that means.";
