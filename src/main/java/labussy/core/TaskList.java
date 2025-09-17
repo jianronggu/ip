@@ -3,6 +3,7 @@ package labussy.core;
 import labussy.task.Task;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class TaskList {
     private final ArrayList<Task> list;
@@ -45,12 +46,8 @@ public class TaskList {
     // Return an arraylist of tasks with matching keyword
     public ArrayList<Task> find(String keyword) {
         String q = keyword.toLowerCase();
-        ArrayList<Task> res = new ArrayList<>();
-        for (Task t : list) {
-            if (t.getDescription().toLowerCase().contains(q)) {
-                res.add(t);
-            }
-        }
-        return res;
+        return list.stream()
+                .filter(t -> t.toString().toLowerCase().contains(q))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
