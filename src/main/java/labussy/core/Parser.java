@@ -24,6 +24,8 @@ public final class Parser {
 
     // Parse a 1-based index after a prefix like "todo ".
     public static int index1(String in, String prefix) {
+        assert in != null : "input must not be null";
+        assert prefix != null && in.startsWith(prefix) : "index1: prefix mismatch";
         return Integer.parseInt(in.substring(prefix.length()).trim());
     }
 

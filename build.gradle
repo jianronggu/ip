@@ -33,7 +33,13 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
 }
 
+
+// Enable assertions
+tasks.named('run') { enableAssertions = true }
+
 test {
+    // Assertions add tests
+    jvmArgs += '-ea'
     useJUnitPlatform()
 
     testLogging {
