@@ -12,6 +12,11 @@ public class Event extends Task {
         this.from = from;
         this.to = to;
     }
+    public Dates getDate() { return from; }
+
+    public boolean dueSoon() {
+        return (from.daysUntil() < 1);
+    }
 
     @Override
     public String toString() {

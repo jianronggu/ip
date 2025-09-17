@@ -12,6 +12,8 @@ import labussy.task.Task;
 import labussy.task.ToDo;
 import labussy.time.Dates;
 
+import java.time.LocalDateTime;
+
 public class Labussy {
     public static void main(String[] args) {
 
@@ -30,6 +32,7 @@ public class Labussy {
 
                 case LIST:
                     ui.showList(tasks);
+                    ui.showDueSoon(tasks);
                     break;
 
                 case TODO: {

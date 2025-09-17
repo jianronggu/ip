@@ -11,6 +11,12 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    public Dates getDate() { return by; }
+
+    public boolean dueSoon() {
+        return (by.daysUntil() < 1);
+    }
+
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + by + ")";

@@ -1,4 +1,3 @@
-[T][ ] 1
-[T][ ] 2
-[T][ ] 3
-[T][ ] 4
+[T][ ] homework
+[D][ ] meeting (by: Sep 19 2025 12:00 pm)
+[D][ ] movie (by: Sep 18 2025 3:00 am)

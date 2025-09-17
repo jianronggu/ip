@@ -1,6 +1,7 @@
 package labussy.core.ui;
 
 import labussy.core.TaskList;
+import labussy.task.Deadline;
 import labussy.task.Task;
 
 import java.util.ArrayList;
@@ -83,5 +84,14 @@ public class Ui {
             System.out.println(" " + (i + 1) + "." + tasks.get(i));
         }
         showLine();
+    }
+
+    public void showDueSoon(TaskList tasks) {
+        System.out.println("These tasks are due soon (less than 1 day):");
+            for (int i = 0; i < tasks.size(); i++) {
+                if (tasks.get(i) instanceof Deadline && ((Deadline) tasks.get(i)).dueSoon()) {
+                    System.out.println(tasks.get(i));
+                }
+            }
     }
 }
