@@ -28,8 +28,9 @@ public class TaskList {
     }
 
     // Getter function with index as para.
-    public Task get(int idx0) {
-        return list.get(idx0);
+    public Task get(int index) {
+        assert index >= 0 && index < list.size() : "index out of bounds";
+        return list.get(index);
     }
 
     // Return list size.

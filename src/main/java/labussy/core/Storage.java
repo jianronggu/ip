@@ -32,6 +32,7 @@ public class Storage {
 
 // Save tasks to the storage.
     public void save(ArrayList<Task> tasks) {
+        assert tasks != null : "tasks cannot be null";
         ensurePath();
         try (FileWriter fw = new FileWriter(file, false)) {
             String nl = System.lineSeparator();
