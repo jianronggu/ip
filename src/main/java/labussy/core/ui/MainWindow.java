@@ -13,6 +13,10 @@ import labussy.Labussy;
 
 import java.io.InputStream;
 
+/**
+ * JavaFX controller for the main chat window: handles input, displays dialog boxes and exits gracefully on 'bye'.
+ */
+
 public class MainWindow {
     @FXML private ScrollPane scrollPane;
     @FXML private VBox dialogContainer;
@@ -23,6 +27,10 @@ public class MainWindow {
     // Lazy-loaded in initialize(); keep null-safe
     private Image userImage;
     private Image dukeImage;
+
+    /**
+     * FXML callback after field injection. Binds scrolling, loads avatars and styles the input bar.
+     */
 
     @FXML
     public void initialize() {
@@ -40,7 +48,11 @@ public class MainWindow {
         // If both are null, DialogBox will simply show no avatar (that's OK)
     }
 
-    /** Setter used by Main.java */
+    /**
+     * Injects the legacy application backend for compatibility.
+     * @param app parameter
+     */
+
     public void setLabussy(Labussy app) {
         this.labussy = app;
         // Optionally show a welcome message:

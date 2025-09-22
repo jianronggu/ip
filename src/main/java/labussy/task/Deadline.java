@@ -2,22 +2,45 @@ package labussy.task;
 
 import labussy.time.Dates;
 
+/**
+ * Task that must be completed by a specific date/time.
+ */
+
 public class Deadline extends Task {
 
     protected Dates by;
+
+    /**
+     * Constructs a new Deadline.
+     * @param description parameter
+     * @param by parameter
+     */
 
     public Deadline(String description, Dates by) {
         super(description);
         this.by = by;
     }
 
-    // return date of the task
+    /**
+     * Returns the primary date associated with this task.
+     * @return result
+     */
+
     public Dates getDate() { return by; }
 
-    // return true/false the task is due within a day
+    /**
+     * Returns true if this item occurs within the next day.
+     * @return result
+     */
+
     public boolean dueSoon() {
         return (by.daysUntil() < 1);
     }
+
+    /**
+     * Returns a human-readable representation for lists and storage echoes.
+     * @return result
+     */
 
     @Override
     public String toString() {

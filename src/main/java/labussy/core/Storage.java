@@ -13,24 +13,45 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Reads/writes tasks from/to disk using a simple line format.
+ */
+
 public class Storage {
     private final File file;
+
+    /**
+     * Constructs a new Storage.
+     */
 
     public Storage() {
         this("data", "duke.txt");
     }
 
+    /**
+     * Constructs a new Storage.
+     * @param dir parameter
+     * @param name parameter
+     */
+
     public Storage(String dir, String name) {
         this.file = new File(dir, name);
     }
 
-    // Load tasks from disk, create a folder if missing, skip bad lines.
+    /**
+     * Loads tasks from disk (creating a default file if necessary).
+     * @return result
+     */
+
     public ArrayList<Task> load() {
         ensurePath();
         return helperLoad();
     }
 
-// Save tasks to the storage.
+    /**
+     * Persists the provided tasks to disk in a simple line format.
+     * @param tasks parameter
+     */
     public void save(ArrayList<Task> tasks) {
         assert tasks != null : "tasks cannot be null";
         ensurePath();

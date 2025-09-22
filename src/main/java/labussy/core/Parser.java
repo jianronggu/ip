@@ -2,13 +2,21 @@ package labussy.core;
 
 import labussy.exception.BlankException;
 import labussy.exception.MissingComponentException;
-
+/**
+ * Static helpers to classify and extract command parts from user input.
+ */
 public final class Parser {
     private Parser() {}
-    // Kind ENUM stores all the instruction words.
     // ChatGPT 5.0 is used for the Kind enum and method.
+    /**
+     * Kind enum for the Labussy chat app.
+     */
     public enum Kind { BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, FIND, UNKNOWN }
-
+    /**
+     * Classifies the raw user input into a command kind.
+     * @param in parameter
+     * @return result
+     */
     public static Kind kind(String in) {
         String s = in.trim();
         if (s.equalsIgnoreCase("bye"))  return Kind.BYE;
@@ -23,7 +31,12 @@ public final class Parser {
         return Kind.UNKNOWN;
     }
 
-    // Parse a 1-based index after a prefix like "todo ".
+    /**
+     * Return the index of the prefix in the input
+     * @param in parameter
+     * @param prefix parameter
+     * @return result
+     */
     public static int index1(String in, String prefix) {
         assert in != null : "input must not be null";
         assert prefix != null && in.startsWith(prefix) : "index1: prefix mismatch";

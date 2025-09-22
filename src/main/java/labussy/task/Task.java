@@ -1,8 +1,12 @@
 package labussy.task;
 
+// Handles description and isDone attributes for a task
+
 public class Task {
     protected String description;
     protected boolean isDone;
+
+    //Initialise with given description and isDone to false.
 
     public Task(String description) {
         this.description = description;

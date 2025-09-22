@@ -67,17 +67,33 @@ public class Ui {
 
     // ======= GUI-friendly formatters (no printing) =======
 
+    /**
+     * Returns Welcome message.
+     */
+
     public String msgWelcome() {
         return "BEW BEW! I'm Labussy\nWhat can I do for you?";
     }
 
+    /**
+     * Returns Bye message.
+     */
     public String msgBye() {
         return "BEW BEW. Hope to see you again soon!";
     }
 
+    /**
+     * Returns Empty List message.
+     */
+
     public String msgEmptyList() {
         return "Your list is empty.";
     }
+
+    /**
+     * Returns List of tasks.
+     * @param tasks
+     */
 
     public String msgList(TaskList tasks) {
         StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
@@ -93,7 +109,9 @@ public class Ui {
      *  - dueSoon()
      *  - isDueSoon()
      * If neither exists, it silently skips.
+     * @param tasks
      */
+
     public String msgDueSoon(TaskList tasks) {
         StringBuilder sb = new StringBuilder();
         boolean any = false;
@@ -137,23 +155,50 @@ public class Ui {
         return sb.toString().trim();
     }
 
+    /**
+     * Returns Add message.
+     * @param t
+     * @param newCount
+     */
+
     public String msgAdded(Task t, int newCount) {
         return "Got it. I've added this task:\n  " + t
                 + "\nNow you have " + newCount + " tasks in the list.";
     }
+
+    /**
+     * Returns Delete message.
+     * @param removed
+     * @param  newCount
+     */
 
     public String msgDeleted(Task removed, int newCount) {
         return "Noted. I've removed this task:\n  " + removed
                 + "\nNow you have " + newCount + " tasks in the list.";
     }
 
+    /**
+     * Returns marked message.
+     * @param t
+     */
+
     public String msgMarked(Task t) {
         return "BEW BEW! I've marked this task as done:\n  " + t;
     }
 
+    /**
+     * Returns unmarked message.
+     * @param t
+     */
+
     public String msgUnmarked(Task t) {
         return "BEW BEW, I've marked this task as not done yet:\n  " + t;
     }
+
+    /**
+     * Returns a list of found tasks.
+     * @param matches
+     */
 
     public String msgFind(List<Task> matches) {
         if (matches == null || matches.isEmpty()) {
@@ -166,13 +211,21 @@ public class Ui {
         return sb.toString().trim();
     }
 
-    /** Prefix with ☹ so your GUI can style error bubbles automatically. */
+    /**
+     * Returns Error message.
+     * @param details
+     */
+
     public String msgError(String details) {
         String message = (details == null || details.isBlank())
                 ? "Something went wrong."
                 : details.trim();
         return "☹ BEW BEW!!! " + message;
     }
+
+    /**
+     * Returns InvalidIndex message
+     */
 
     public String msgInvalidIndex() {
         return msgError("Invalid task number");

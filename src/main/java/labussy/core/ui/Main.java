@@ -10,10 +10,18 @@ import javafx.stage.Stage;
 
 import labussy.Labussy;
 
-/** A GUI for Duke using FXML. */
+/**
+ * JavaFX application entry point. Boots the scene graph and wires the controller to the application logic.
+ */
+
 public class Main extends Application {
 
     private final Labussy labussy = new Labussy();
+
+    /**
+     * Initializes the JavaFX stage and shows the main window.
+     * @param stage parameter
+     */
 
     @Override
     public void start(Stage stage) {

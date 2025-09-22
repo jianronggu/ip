@@ -17,16 +17,29 @@ import labussy.task.Event;
 
 import labussy.time.Dates;
 
+/**
+ * Application logic that processes user commands against a TaskList and returns textual responses.
+ */
+
+
 public class Labussy {
     private final Storage storage;
     private final TaskList tasks;
     private final Ui ui = new Ui();   // reuse the same Ui for formatting
     private boolean exit = false;
 
+    /**
+     * Initialise Storage and tasks
+     */
     public Labussy() {
         this.storage = new Storage();
         this.tasks = new TaskList(storage.load());
     }
+
+    /** Receive response from the user
+     * @param input
+     * @return String of chatbot feedback
+     */
 
     public String getResponse(String input) {
         String s = (input == null) ? "" : input.trim();
@@ -124,7 +137,10 @@ public class Labussy {
         return exit;
     }
 
-    // CLI main can keep using Ui's I/O methods if you already had them
+    /**
+     * Starts the application from the command line.
+     * @param args parameter
+     */
     public static void main(String[] args) {
         Ui ui = new Ui();
         Labussy app = new Labussy();

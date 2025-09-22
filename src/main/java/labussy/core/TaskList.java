@@ -5,41 +5,75 @@ import labussy.task.Task;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+/**
+ * Mutable list-like facade around tasks with helpers for add/remove/find and persistence integration.
+ */
+
 public class TaskList {
     private final ArrayList<Task> list;
 
-    // Return a new empty list with no input.
+    /**
+     * Constructs a new TaskList.
+     */
+
     public TaskList() {
         this.list = new ArrayList<>();
     }
 
-    // Return a new filled list with input
+    /**
+     * Constructs a new TaskList.
+     * @param tasks parameter
+     */
+
     public TaskList(ArrayList<Task> tasks) {
         this.list = new ArrayList<>(tasks);
     }
 
-    // Add a task to the task list.
+    /**
+     * Appends a task to the end of the list.
+     * @param t parameter
+     */
+
     public void add(Task t) {
         list.add(t);
     }
 
-    // Delete by 0-index from the list.
+    /**
+     * Removes and returns the task at the given index.
+     * @param idx0 parameter
+     * @return result
+     */
+
     public Task delete(int idx0) {
         return list.remove(idx0);
     }
 
-    // Getter function with index as para.
+    /**
+     * Returns the task at the given zero-based index.
+     * @param index parameter
+     * @return result
+     */
+
     public Task get(int index) {
         assert index >= 0 && index < list.size() : "index out of bounds";
         return list.get(index);
     }
 
-    // Return list size.
+    /**
+     * Returns the number of tasks held.
+     * @return result
+     */
+
     public int size() {
         return list.size();
     }
 
-    // Access the whole list for storage.
+    /**
+     * Returns tasks whose string form contains the case-insensitive keyword.
+     * @param keyword parameter
+     * @return result
+     */
+
     public ArrayList<Task> all() {
         return list;
     }
