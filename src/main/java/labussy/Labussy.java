@@ -62,7 +62,7 @@ public class Labussy {
                     tasks.add(d);
                     storage.save(tasks.all());
                     return ui.msgAdded(d, tasks.size());
-                } catch (MissingComponentException | BlankException e) {
+                } catch (MissingComponentException | BlankException | IllegalArgumentException e) {
                     return ui.msgError(e.getMessage());
                 }
             }
@@ -74,7 +74,7 @@ public class Labussy {
                     tasks.add(ev);
                     storage.save(tasks.all());
                     return ui.msgAdded(ev, tasks.size());
-                } catch (MissingComponentException | BlankException e) {
+                } catch (MissingComponentException | BlankException | IllegalArgumentException e) {
                     return ui.msgError(e.getMessage());
                 }
             }
