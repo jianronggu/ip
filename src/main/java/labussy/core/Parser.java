@@ -6,6 +6,7 @@ import labussy.exception.MissingComponentException;
 public final class Parser {
     private Parser() {}
     // Kind ENUM stores all the instruction words.
+    // ChatGPT 5.0 is used for the Kind enum and method.
     public enum Kind { BYE, LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, FIND, UNKNOWN }
 
     public static Kind kind(String in) {
