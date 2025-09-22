@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main, "branch-*", "A-*", "feature-*", "fix-*" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Grant execute permission for Gradle wrapper
+        run: chmod +x gradlew
+
+      # Build + run tests (uses your Gradle config, JUnit, assertions, etc.)
+      - name: Build
+        run: ./gradlew clean build --stacktrace
+
+      # Create the fat (shaded) JAR that bundles JavaFX
+      - name: Build shaded JAR
+        run: ./gradlew shadowJar
+
+      # Upload the JAR so you can download it from the workflow page
+      - name: Upload artifact (shaded JAR)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Labussy
+          path: build/libs/*-all.jar
+          if-no-files-found: warn
