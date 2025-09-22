@@ -14,6 +14,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DialogBox of UI
+ *
+ * @param text The String text.
+ * @param img The Image avatar.
+ * @return (void, just set text and avatar)
+ */
+
 public class DialogBox extends HBox {
     @FXML private Label dialog;
     @FXML private ImageView displayPicture;
@@ -42,7 +50,13 @@ public class DialogBox extends HBox {
         }
     }
 
-    /** Bot (left) bubble: avatar then text. */
+    /**
+     * Bot (left) bubble: avatar then text.
+     *
+     * @param text The String text of bot.
+     * @param img The Image avatar of bot.
+     * @return (void, just set text and avatar)
+     */
     public static DialogBox getDukeDialog(String text, Image img) {
         DialogBox db = new DialogBox(text, img);
         db.setAlignment(Pos.TOP_LEFT);
@@ -51,14 +65,26 @@ public class DialogBox extends HBox {
         return db;
     }
 
-    /** Bot error bubble: same as duke + error class. */
+    /**
+     * Bot error bubble: same as duke + error class.
+     *
+     * @param text The String text of bot.
+     * @param img The Image avatar of bot.
+     * @return error bubble
+     */
     public static DialogBox getDukeErrorDialog(String text, Image img) {
         DialogBox db = getDukeDialog(text, img);
         db.dialog.getStyleClass().add("error");
         return db;
     }
 
-    /** User (right) bubble: text then avatar. */
+    /**
+     * User (right) bubble: text then avatar.
+     *
+     * @param text The String text of user.
+     * @param img The Image avatar of user.
+     * @return (void, just set text and avatar)
+     */
     public static DialogBox getUserDialog(String text, Image img) {
         DialogBox db = new DialogBox(text, img);
         db.setAlignment(Pos.TOP_RIGHT);

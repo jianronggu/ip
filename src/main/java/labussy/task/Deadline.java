@@ -11,8 +11,10 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    // return date of the task
     public Dates getDate() { return by; }
 
+    // return true/false the task is due within a day
     public boolean dueSoon() {
         return (by.daysUntil() < 1);
     }

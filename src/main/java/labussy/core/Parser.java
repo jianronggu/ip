@@ -75,7 +75,11 @@ public final class Parser {
         return new String[]{desc, from, to};
     }
 
-    // Pull out the key word.
+    /** find <desc>
+     *  @param in input of "find homework"
+     *  @return String keywword
+     *  @throws BlankException if keyword is empty.
+     *  */
     public static String findKeyword(String in) throws BlankException {
         String q = in.substring("find ".length()).trim();
         if (q.isEmpty()) throw new BlankException();
