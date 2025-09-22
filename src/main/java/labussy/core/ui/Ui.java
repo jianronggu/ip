@@ -1,97 +1,180 @@
 package labussy.core.ui;
 
+import java.util.List;
+import java.util.Scanner;
+
 import labussy.core.TaskList;
-import labussy.task.Deadline;
 import labussy.task.Task;
-
-import java.util.ArrayList;
-
+//ChatGPT used
+/**
+ * UI helper for both CLI and GUI.
+ * - CLI methods: showWelcome(), readCommand(), showList(), etc. (they PRINT)
+ * - GUI methods: msgWelcome(), msgList(...), msgError(...), etc. (they RETURN strings)
+ *
+ * Keep all user-facing text in the msg* methods so both frontends stay consistent.
+ */
 public class Ui {
-    private static final String LINE = "____________________________________________________________";
-    private final java.util.Scanner in = new java.util.Scanner(System.in);
 
-    // Print a line for aesthetic reasons.
-    public void showLine() {
-        System.out.println(LINE);
-    }
-    // Print Welcome Page.
-    public void showWelcome() {
-        showLine();
-        System.out.println("Hello! I'm Labussy.");
-        System.out.println("What can I do for you?");
-        showLine();
-    }
-    // Capture the input from the user.
+    // ======= CLI I/O =======
+
+    private final Scanner sc = new Scanner(System.in);
+
+    /** Read one line from stdin (CLI). */
     public String readCommand() {
-        return in.nextLine().trim();
+        return sc.hasNextLine() ? sc.nextLine() : "";
     }
-    // Print Bye and terminate the program.
+
+    /** Print a string (internal helper). */
+    private void show(String s) {
+        System.out.println(s);
+    }
+
+    /** CLI: show welcome banner. */
+    public void showWelcome() {
+        show(msgWelcome());
+    }
+
+    /** CLI: show goodbye message. */
     public void showBye() {
-        showLine();
-        System.out.println("Bye. Hope to see you again soon!");
-        showLine();
+        show(msgBye());
     }
-    // Print a list in a list format, with each task displayed.
+
+    /** CLI: show full list or 'empty'. */
     public void showList(TaskList tasks) {
-        showLine();
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(" " + (i + 1) + "." + tasks.get(i));
+        if (tasks == null || tasks.size() == 0) {
+            show(msgEmptyList());
+        } else {
+            show(msgList(tasks));
         }
-        showLine();
     }
 
-    public void showAdded(Task task, int size) {
-        showLine();
-        System.out.println("Got it. I've added this task: ");
-        System.out.println(task);
-        System.out.println("Now you have " + size + " tasks in the list.");
-        showLine();
-    }
-
-    public void showError(String errorMessage) {
-        showLine();
-        System.out.println(errorMessage);
-        showLine();
-    }
-
-    public void showMarked(Task task) {
-        showLine();
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println(task);
-        showLine();
-    }
-
-    public void showUnmarked(Task task) {
-        showLine();
-        System.out.println("OK, I've marked this task as not done yet: ");
-        System.out.println(task);
-        showLine();
-    }
-
-    public void showRemoved(Task task, int size) {
-        showLine();
-        System.out.println("Noted. I've removed this task: ");
-        System.out.println(task);
-        System.out.println("Now you have " + size + " tasks in the list.");
-        showLine();
-    }
-
-    // Print find a task.
-    public void showFindResults(ArrayList<Task> tasks) {
-        showLine();
-        System.out.println("Here are the matching tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(" " + (i + 1) + "." + tasks.get(i));
-        }
-        showLine();
-    }
-
+    /** CLI: optionally show "due soon" section if any. */
     public void showDueSoon(TaskList tasks) {
-        System.out.println("These tasks are due soon (less than 1 day):");
-            for (int i = 0; i < tasks.size(); i++) {
-                if (tasks.get(i) instanceof Deadline && ((Deadline) tasks.get(i)).dueSoon()) {
-                    System.out.println(tasks.get(i));
+        String s = msgDueSoon(tasks);
+        if (!s.isBlank()) {
+            show(s);
+        }
+    }
+
+    /** CLI: wrappers that reuse the same wording as GUI. */
+    public void showAdded(Task t, int newCount) { show(msgAdded(t, newCount)); }
+    public void showDeleted(Task t, int newCount) { show(msgDeleted(t, newCount)); }
+    public void showMarked(Task t) { show(msgMarked(t)); }
+    public void showUnmarked(Task t) { show(msgUnmarked(t)); }
+    public void showFind(List<Task> matches) { show(msgFind(matches)); }
+    public void showError(String details) { show(msgError(details)); }
+    public void showInvalidIndex() { show(msgInvalidIndex()); }
+
+    // ======= GUI-friendly formatters (no printing) =======
+
+    public String msgWelcome() {
+        return "BEW BEW! I'm Labussy\nWhat can I do for you?";
+    }
+
+    public String msgBye() {
+        return "BEW BEW. Hope to see you again soon!";
+    }
+
+    public String msgEmptyList() {
+        return "Your list is empty.";
+    }
+
+    public String msgList(TaskList tasks) {
+        StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append(" ").append(i + 1).append(". ").append(tasks.get(i)).append("\n");
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * Optional "due soon" section.
+     * Tries to call a boolean checker on Deadline-like tasks via reflection to avoid hard coupling:
+     *  - dueSoon()
+     *  - isDueSoon()
+     * If neither exists, it silently skips.
+     */
+    public String msgDueSoon(TaskList tasks) {
+        StringBuilder sb = new StringBuilder();
+        boolean any = false;
+
+        for (int i = 0; i < tasks.size(); i++) {
+            Task t = tasks.get(i);
+            boolean isDueSoon = false;
+
+            try {
+                // Try method name: dueSoon()
+                java.lang.reflect.Method m;
+                try {
+                    m = t.getClass().getMethod("dueSoon");
+                } catch (NoSuchMethodException e1) {
+                    // Fallback: isDueSoon()
+                    try {
+                        m = t.getClass().getMethod("isDueSoon");
+                    } catch (NoSuchMethodException e2) {
+                        m = null;
+                    }
                 }
+                if (m != null) {
+                    Object res = m.invoke(t);
+                    if (res instanceof Boolean) {
+                        isDueSoon = (Boolean) res;
+                    }
+                }
+            } catch (ReflectiveOperationException ignored) {
+                // If checker is absent or throws, ignore gracefully.
             }
+
+            if (isDueSoon) {
+                if (!any) {
+                    sb.append("\nThese tasks are due soon (less than 1 day):\n");
+                    any = true;
+                }
+                sb.append(" ").append(i + 1).append(". ").append(t).append("\n");
+            }
+        }
+
+        return sb.toString().trim();
+    }
+
+    public String msgAdded(Task t, int newCount) {
+        return "Got it. I've added this task:\n  " + t
+                + "\nNow you have " + newCount + " tasks in the list.";
+    }
+
+    public String msgDeleted(Task removed, int newCount) {
+        return "Noted. I've removed this task:\n  " + removed
+                + "\nNow you have " + newCount + " tasks in the list.";
+    }
+
+    public String msgMarked(Task t) {
+        return "BEW BEW! I've marked this task as done:\n  " + t;
+    }
+
+    public String msgUnmarked(Task t) {
+        return "BEW BEW, I've marked this task as not done yet:\n  " + t;
+    }
+
+    public String msgFind(List<Task> matches) {
+        if (matches == null || matches.isEmpty()) {
+            return "No matching tasks.";
+        }
+        StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
+        for (int i = 0; i < matches.size(); i++) {
+            sb.append(" ").append(i + 1).append(". ").append(matches.get(i)).append("\n");
+        }
+        return sb.toString().trim();
+    }
+
+    /** Prefix with ☹ so your GUI can style error bubbles automatically. */
+    public String msgError(String details) {
+        String message = (details == null || details.isBlank())
+                ? "Something went wrong."
+                : details.trim();
+        return "☹ BEW BEW!!! " + message;
+    }
+
+    public String msgInvalidIndex() {
+        return msgError("Invalid task number");
     }
 }

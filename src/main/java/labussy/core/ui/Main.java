@@ -8,12 +8,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import labussy.core.Duke;
+import labussy.Labussy;
 
 /** A GUI for Duke using FXML. */
 public class Main extends Application {
 
-    private final Duke duke = new Duke();
+    private final Labussy labussy = new Labussy();
 
     @Override
     public void start(Stage stage) {
@@ -28,7 +28,7 @@ public class Main extends Application {
 
             // inject Duke into the controller
             MainWindow controller = fxmlLoader.getController();
-            controller.setDuke(duke);
+            controller.setLabussy(labussy);
         } catch (IOException e) {
             // simple error print for the tutorial
             e.printStackTrace();

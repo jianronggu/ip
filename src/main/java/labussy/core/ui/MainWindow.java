@@ -1,59 +1,93 @@
 package labussy.core.ui;
 
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.util.Duration;
 
+import labussy.Labussy;
 
-import labussy.core.Duke;
+import java.io.InputStream;
 
-/** Controller for the main GUI. */
-public class MainWindow extends AnchorPane {
-
+public class MainWindow {
     @FXML private ScrollPane scrollPane;
     @FXML private VBox dialogContainer;
     @FXML private TextField userInput;
-    @FXML private Button sendButton;
 
-    private Duke duke;
+    private Labussy labussy;
 
-    private final Image userImage = new Image(MainWindow.class.getResourceAsStream("/images/DaUser.png"));
-    private final Image dukeImage = new Image(MainWindow.class.getResourceAsStream("/images/DaDuke.png"));
+    // Lazy-loaded in initialize(); keep null-safe
+    private Image userImage;
+    private Image dukeImage;
 
-    /** Auto-scroll to bottom when dialog container grows. */
     @FXML
     public void initialize() {
+        // Always scroll to newest message
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+
+        // Make chat fill width so bubbles wrap on resize
+        dialogContainer.setFillWidth(true);
+        dialogContainer.getStyleClass().add("chat");
+        dialogContainer.prefWidthProperty().bind(scrollPane.widthProperty().subtract(12));
+
+        // Load avatars (try multiple common names), but don't crash if missing
+        userImage = loadImageOrNull("/images/User.png", "/images/DaUser.png");
+        dukeImage = loadImageOrNull("/images/Duke.png", "/images/DaDuke.png");
+        // If both are null, DialogBox will simply show no avatar (that's OK)
     }
 
-    /** Inject the Duke core instance. */
-    public void setDuke(Duke d) {
-        this.duke = d;
+    /** Setter used by Main.java */
+    public void setLabussy(Labussy app) {
+        this.labussy = app;
+        // Optionally show a welcome message:
+        // dialogContainer.getChildren().add(DialogBox.getDukeDialog(new Ui().msgWelcome(), dukeImage));
     }
 
-    /** Handles Enter key and Send button (wired in FXML). */
+    /** Back-compat if older code still calls setDuke(...) */
+    public void setDuke(Labussy app) { setLabussy(app); }
+
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = duke.getResponse(input);
+        if (input == null) return;
+        input = input.trim();
+        if (input.isEmpty()) return;
+
+        String response = labussy.getResponse(input).trim();
+        boolean isError = response.startsWith("☹") || response.toLowerCase().contains("oops");
+
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
+                isError
+                        ? DialogBox.getDukeErrorDialog(response, dukeImage)
+                        : DialogBox.getDukeDialog(response, dukeImage)
         );
+
         userInput.clear();
-        // If the user says "bye", show reply then exit after a short delay
-        if (input.trim().equalsIgnoreCase("bye")) {
+
+        if (input.equalsIgnoreCase("bye")) {
             PauseTransition delay = new PauseTransition(Duration.millis(400));
             delay.setOnFinished(e -> Platform.exit());
             delay.play();
         }
+    }
 
+    /** Tries candidates in order; returns first found Image or null (never throws). */
+    private Image loadImageOrNull(String... candidates) {
+        for (String path : candidates) {
+            InputStream is = getClass().getResourceAsStream(path);
+            if (is != null) {
+                try {
+                    return new Image(is);
+                } catch (Exception ignored) {
+                    // corrupted image; try next candidate
+                }
+            }
+        }
+        return null;
     }
 }

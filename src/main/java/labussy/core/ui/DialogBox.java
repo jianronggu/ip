@@ -54,4 +54,12 @@ public class DialogBox extends HBox {
         db.flip(); // left-aligned for Duke
         return db;
     }
+    public static DialogBox getDukeErrorDialog(String text, Image img) {
+        DialogBox db = getDukeDialog(text, img);
+        // Tag the inner label so CSS can style it as an error bubble
+        // (works if your class has a field named 'dialog' for the Label)
+        db.dialog.getStyleClass().add("error");
+        return db;
+    }
+
 }
