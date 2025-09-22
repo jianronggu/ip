@@ -24,6 +24,13 @@ public class Main extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Labussy");
+
+            // Add stylesheet if not already
+            scene.getStylesheets().add(Main.class.getResource("/view/styles.css").toExternalForm());
+
+            // Make the whole window pink
+            root.getStyleClass().add("theme-pink");
+
             stage.show();
 
             // inject Duke into the controller

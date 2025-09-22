@@ -71,7 +71,21 @@
     -fx-font-size: 14px;
 }
 .button:hover { -fx-background-color: #1D4ED8; }
+
 .button:armed { -fx-background-color: #1E40AF; }
 
 /* A bit of breathing room around the ScrollPane */
 #scrollPane { -fx-padding: 8 8 4 8; }
+/* Pink app background */
+.root.theme-pink {
+    -fx-background-color: linear-gradient(to bottom, #FFE6F2, #FFD6EC);
+}
+
+/* Make only the Send button green (uses its fx:id) */
+#sendButton {
+    -fx-background-color: #22C55E;      /* green */
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+}
+#sendButton:hover {  -fx-background-color: #16A34A; }
+#sendButton:armed {  -fx-background-color: #15803D; }
