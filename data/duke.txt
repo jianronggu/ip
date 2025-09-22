@@ -1,3 +1,5 @@
-[T][ ] homework
-[D][ ] meeting (by: Sep 19 2025 12:00 pm)
-[D][ ] movie (by: Sep 18 2025 3:00 am)
+[D][X] meeting (by: Sep 19 2025 12:00 pm)
+[D][X] movie (by: Sep 18 2025 3:00 am)
+[T][ ] dinner
+[D][ ] meeting (by: Sep 20 2025 11:00 pm)
+[T][ ] have fun
