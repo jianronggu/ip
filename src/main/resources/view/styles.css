@@ -1,0 +1,77 @@
+/* ========== Base app look ========== */
+.root {
+    -fx-font-family: "Inter", "Segoe UI", "Arial";
+    -fx-font-size: 15px;               /* Bigger text app-wide */
+    -fx-background-color: #FAFAFB;     /* Default neutral bg */
+}
+
+/* Pick ONE at runtime by adding the style class to the root node */
+.root.theme-pink {
+    -fx-background-color: linear-gradient(to bottom, #FFE6F2, #FFD6EC);
+}
+.root.theme-green {
+    -fx-background-color: linear-gradient(to bottom, #E9F9EF, #D5F5DD);
+}
+
+/* ScrollPane chrome cleanup */
+.scroll-pane, .scroll-pane .viewport { -fx-background-color: transparent; }
+.scroll-pane .corner { -fx-background-color: transparent; }
+.scroll-bar:vertical, .scroll-bar:horizontal { -fx-background-color: transparent; }
+.scroll-bar .thumb { -fx-background-color: rgba(0,0,0,0.18); -fx-background-insets: 0; -fx-background-radius: 6; }
+
+/* Dialog container spacing */
+.vbox.chat { -fx-spacing: 10; -fx-padding: 12 12 12 12; }
+
+/* ========== Chat bubbles ========== */
+.bubble {
+    -fx-padding: 12 14;                /* Bigger padding for bigger text */
+    -fx-background-radius: 14;
+    -fx-background-color: linear-gradient(to bottom, #FFFFFF, #F5F6F8);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0.25, 0, 1.5);
+    -fx-line-spacing: 0.25em;
+    -fx-font-size: 15px;               /* Larger bubble text */
+}
+.duke { -fx-background-color: #F1F2F5; }
+.user { -fx-background-color: #E6F0FF; }
+
+.error {
+    -fx-background-color: #FFEFEF;
+    -fx-border-color: #E57373;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+}
+
+/* ========== Input bar ========== */
+.hbox.input-bar {
+    -fx-padding: 8 10;
+    -fx-spacing: 10;
+    -fx-background-color: rgba(255,255,255,0.88);   /* Looks good over pink/green */
+    -fx-border-color: rgba(0,0,0,0.06);
+    -fx-border-width: 1 0 0 0; /* top border only */
+}
+.text-field {
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+    -fx-padding: 10 12;                /* Bigger input text & touch target */
+    -fx-background-color: #F7F8FA;
+    -fx-font-size: 15px;
+    -fx-border-color: transparent;
+}
+.text-field:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.25, 0, 2);
+}
+.button {
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+    -fx-padding: 10 14;                /* Bigger button */
+    -fx-background-color: #2563EB;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+}
+.button:hover { -fx-background-color: #1D4ED8; }
+.button:armed { -fx-background-color: #1E40AF; }
+
+/* A bit of breathing room around the ScrollPane */
+#scrollPane { -fx-padding: 8 8 4 8; }
